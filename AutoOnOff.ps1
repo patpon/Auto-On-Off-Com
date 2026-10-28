@@ -104,12 +104,17 @@ function Initialize-DataDir {
 }
 
 function Enable-WakeTimers {
-    # Power plan "Allow wake timers" = Enable (AC + battery). Hidden on some Modern Standby PCs - ignore failures.
-    $sub = '238c9fa8-0aed-41ed-83f4-97be242c8f20'
-    $set = 'bd3b718a-0680-4d9d-8ab2-e1d2b4ac806d'
-    Invoke-Native powercfg.exe @('/setacvalueindex', 'SCHEME_CURRENT', $sub, $set, '1') | Out-Null
-    Invoke-Native powercfg.exe @('/setdcvalueindex', 'SCHEME_CURRENT', $sub, $set, '1') | Out-Null
+    # Power plan "Allow wake timers" = Enable (AC + battery). The setting only exists once
+    # hibernation is on for some Modern Standby PCs, so failures are reported via Test-WakeTimers.
+    Invoke-Native powercfg.exe @('/setacvalueindex', 'SCHEME_CURRENT', 'SUB_SLEEP', 'RTCWAKE', '1') | Out-Null
+    Invoke-Native powercfg.exe @('/setdcvalueindex', 'SCHEME_CURRENT', 'SUB_SLEEP', 'RTCWAKE', '1') | Out-Null
     Invoke-Native powercfg.exe @('/setactive', 'SCHEME_CURRENT') | Out-Null
+}
+
+function Test-WakeTimers {
+    # Output is localized, but the current AC/DC values are the only 0x........ numbers
+    $values = [regex]::Matches((Invoke-Native powercfg.exe @('/q', 'SCHEME_CURRENT', 'SUB_SLEEP', 'RTCWAKE')), '0x[0-9a-fA-F]{8}')
+    $values.Count -ge 2 -and [Convert]::ToInt32($values[$values.Count - 2].Value, 16) -eq 1
 }
 
 function Remove-Schedule {
@@ -185,6 +190,9 @@ function Get-ScheduleStatus {
     }
     # Tasks running as SYSTEM are hidden from non-elevated sessions
     if (-not (Test-Admin)) { $lines += '(บางรายการซ่อนอยู่ — เปิดด้วยสิทธิ์ Administrator เพื่อดูครบ)' }
+    if ((Test-Path $ConfigPath) -and (Read-Config).On.Enabled -and -not (Test-WakeTimers)) {
+        $lines += '⚠ "Allow wake timers" ของ Power Options ยังปิดอยู่ — เครื่องจะไม่ตื่นเอง กดบันทึกอีกครั้ง'
+    }
     if (Test-Path $LogFile) {
         $lines += ''
         $lines += 'ประวัติล่าสุด:'
