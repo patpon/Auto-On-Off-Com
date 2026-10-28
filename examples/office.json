@@ -1,0 +1,15 @@
+{
+  "Off": {
+    "Enabled": true,
+    "Time": "18:00",
+    "Days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+    "Mode": "Hibernate",
+    "WarnMinutes": 5
+  },
+  "On": {
+    "Enabled": true,
+    "Time": "07:30",
+    "Days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+    "StayAwakeMinutes": 60
+  }
+}
