@@ -183,6 +183,8 @@ function Get-ScheduleStatus {
             $lines += '• {0}  ครั้งถัดไป: {1}' -f $TaskLabels[$t.TaskName], $next
         }
     }
+    # Tasks running as SYSTEM are hidden from non-elevated sessions
+    if (-not (Test-Admin)) { $lines += '(บางรายการซ่อนอยู่ — เปิดด้วยสิทธิ์ Administrator เพื่อดูครบ)' }
     if (Test-Path $LogFile) {
         $lines += ''
         $lines += 'ประวัติล่าสุด:'
@@ -279,7 +281,7 @@ function New-MainForm {
     $script:ui = @{}
 
     $ui.Form = New-Control Form @{
-        Text = 'Auto On/Off — ตั้งเวลาเปิด-ปิดคอมพิวเตอร์'
+        Text = 'Auto On/Off — ตั้งเวลาเปิด-ปิดคอมพิวเตอร์  |  By Aj พชรพล'
         ClientSize = (New-Size 560 660); StartPosition = 'CenterScreen'
         FormBorderStyle = 'FixedSingle'; MaximizeBox = $false
         Font = (New-UiFont 10); BackColor = [System.Drawing.Color]::White
@@ -292,7 +294,11 @@ function New-MainForm {
     }))
     $header.Controls.Add((New-Control Label @{
         Text = 'ใช้ Task Scheduler ของ Windows — ทำงานเองแม้ไม่ได้เปิดโปรแกรมนี้'
-        ForeColor = [System.Drawing.Color]::White; Location = (New-Point 22 40); Size = (New-Size 520 20); Font = (New-UiFont 9)
+        ForeColor = [System.Drawing.Color]::White; Location = (New-Point 22 40); Size = (New-Size 400 20); Font = (New-UiFont 9)
+    }))
+    $header.Controls.Add((New-Control Label @{
+        Text = 'By Aj พชรพล'; ForeColor = $gold; TextAlign = 'MiddleRight'
+        Location = (New-Point 400 40); Size = (New-Size 144 20); Font = (New-UiFont 9 'Italic')
     }))
 
     # --- Power-off group
