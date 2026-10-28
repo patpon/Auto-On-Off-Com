@@ -28,6 +28,8 @@
 
 ยกเลิกทั้งหมด: เปิดโปรแกรม → กด **"ยกเลิกทั้งหมด"**
 
+คู่มือสั้น 1 หน้าสำหรับส่งต่อผู้ใช้เครื่องอื่น: [`HOW-TO-USE.txt`](HOW-TO-USE.txt)
+
 ## ⚠️ เรื่องสำคัญ: "เปิดเครื่องอัตโนมัติ" ทำได้แค่ไหน
 
 Windows ปลุกเครื่องเองได้ **เฉพาะตอนที่เครื่องอยู่ในสถานะพัก** (Sleep / Hibernate) เท่านั้น
@@ -95,6 +97,7 @@ powershell -ExecutionPolicy Bypass -File .\AutoOnOff.ps1 -Apply -ConfigFile .\ex
 ```
 AutoOnOff.ps1            โปรแกรมหลัก (หน้าต่างตั้งค่า + command line)
 Start-AutoOnOff.bat      ดับเบิลคลิกเพื่อเปิดโปรแกรม
+HOW-TO-USE.txt           คู่มือสั้น 1 หน้า (ส่งต่อพร้อมโปรแกรม)
 scripts/
   Off-Warning.ps1        หน้าต่างแจ้งเตือนก่อนปิด
   Off-Action.ps1         สั่งปิด/พักเครื่อง
